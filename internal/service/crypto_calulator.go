@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strconv"
 	"sync"
 	"time"
@@ -25,19 +26,10 @@ type cryptoCalculatorService struct {
 }
 
 func (s *cryptoCalculatorService) GetLastAVGPrices(ctx context.Context, qtDays int, referenceDate time.Time) ([]domain.AverageResponse, errors.ApiError) {
-	if !isValidaQtDays(qtDays) {
+	if !slices.Contains(allowedQtDays, qtDays) {
 		return nil, errors.NewApiError(fmt.Sprintf("invalid qt_days: %v", qtDays), errors.WithKind(errors.Internal))
 	}
 	return s.findAverages(ctx, qtDays, referenceDate)
-}
-
-func isValidaQtDays(qtDays int) bool {
-	for _, qtAllowed := range allowedQtDays {
-		if qtAllowed == qtDays {
-			return true
-		}
-	}
-	return false
 }
 
 func (s *cryptoCalculatorService) findAverages(ctx context.Context, qtDays int, referenceDate time.Time) ([]domain.AverageResponse, errors.ApiError) {
