@@ -3,13 +3,14 @@ package service
 import (
 	"context"
 	"fmt"
-	"sort"
+	"strconv"
 	"sync"
 	"time"
 
 	"github.com/moises-ba/mb-crypto-mms-api/internal/adapter"
 	"github.com/moises-ba/mb-crypto-mms-api/internal/domain"
 	"github.com/moises-ba/mb-crypto-mms-api/internal/errors"
+	"github.com/moises-ba/mb-crypto-mms-api/internal/strategy"
 	"github.com/shopspring/decimal"
 )
 
@@ -27,7 +28,6 @@ func (s *cryptoCalculatorService) GetLastAVGPrices(ctx context.Context, qtDays i
 	if !isValidaQtDays(qtDays) {
 		return nil, errors.NewApiError(fmt.Sprintf("invalid qt_days: %v", qtDays), errors.WithKind(errors.Internal))
 	}
-
 	return s.findAverages(ctx, qtDays, referenceDate)
 }
 
@@ -98,24 +98,40 @@ func (s *cryptoCalculatorService) findAverage(ctx context.Context, digitalCoin d
 	if err != nil {
 		return nil, err
 	}
-	res, err := createAverengeResponse(qtDays, lastPriceRes)
+	res, err := createAverengeResponse(digitalCoin, dtEnd, qtDays, lastPriceRes, strategy.SimpleMovingAverage)
 	if err != nil {
 		return nil, err
 	}
 	return res, nil
 }
 
-func createAverengeResponse(qtDays int, lastClosed *domain.LastPrices) (*domain.AverageResponse, errors.ApiError) {
-	//TODO IMPLEMENTAR
+func createAverengeResponse(digitalCoin domain.DigitalCoin, referenceDate time.Time, qtDays int, lastClosed []string, calcStrategy strategy.AvgCalculator) (*domain.AverageResponse, errors.ApiError) {
+	values, err := convert(lastClosed)
+	if err != nil {
+		return nil, err
+	}
+
+	avg, err := calcStrategy(values)
+	if err != nil {
+		return nil, err
+	}
+
+	return &domain.AverageResponse{
+		ReferenceDate: referenceDate.Format("2006-01-02"),
+		AvgType:       strconv.Itoa(qtDays),
+		DigitalCoin:   digitalCoin,
+		Value:         avg.String(),
+	}, nil
 }
 
-func getDatesDescending(lastCloseds map[string]decimal.Decimal) []string {
-	lastDatesOrderDesc := make([]string, 0, len(lastCloseds))
-	for k := range lastCloseds {
-		lastDatesOrderDesc = append(lastDatesOrderDesc, k)
+func convert(priceValues []string) ([]decimal.Decimal, errors.ApiError) {
+	res := make([]decimal.Decimal, len(priceValues))
+	for _, priceValue := range priceValues {
+		v, err := decimal.NewFromString(priceValue)
+		if err != nil {
+			return nil, errors.NewApiError("unexpected response", errors.WithKind(errors.Unexpected), errors.WithError(err))
+		}
+		res = append(res, v)
 	}
-	sort.Slice(lastDatesOrderDesc, func(i, j int) bool {
-		return lastDatesOrderDesc[i] > lastDatesOrderDesc[j]
-	})
-	return lastDatesOrderDesc
+	return res, nil
 }

@@ -11,7 +11,7 @@ import (
 type mercadoBitcoin struct {
 }
 
-func (m *mercadoBitcoin) ListLastPrices(ctx context.Context, digitalCurrency domain.DigitalCoin, referenceDate time.Time) (*domain.LastPrices, errors.ApiError) {
+func (m *mercadoBitcoin) ListLastPrices(ctx context.Context, digitalCurrency domain.DigitalCoin, referenceDate time.Time) ([]string, errors.ApiError) {
 	//todo implemenar
 	return nil, nil
 }
