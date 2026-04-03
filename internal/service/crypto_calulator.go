@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"slices"
-	"strconv"
 	"sync"
 	"time"
 
 	"github.com/moises-ba/mb-crypto-mms-api/internal/adapter"
 	"github.com/moises-ba/mb-crypto-mms-api/internal/domain"
+	"github.com/moises-ba/mb-crypto-mms-api/internal/dto"
 	"github.com/moises-ba/mb-crypto-mms-api/internal/errors"
 	"github.com/moises-ba/mb-crypto-mms-api/internal/strategy"
 	"github.com/shopspring/decimal"
@@ -29,22 +29,26 @@ func (s *cryptoCalculatorService) GetLastAVGPrices(ctx context.Context, qtDays i
 	if !slices.Contains(allowedQtDays, qtDays) {
 		return nil, errors.NewApiError(fmt.Sprintf("invalid qt_days: %v", qtDays), errors.WithKind(errors.Internal))
 	}
-	return s.findAverages(ctx, qtDays, referenceDate)
+
+	return s.findAverages(ctx, dto.AverageRequest{
+		DigitalCoins: []domain.DigitalCoin{domain.BTC, domain.ETH},
+		AvgType:      domain.SMA,
+		Days:         qtDays,
+		StartDate:    referenceDate.AddDate(0, 0, -qtDays),
+		EndDate:      referenceDate,
+	})
 }
 
-func (s *cryptoCalculatorService) findAverages(ctx context.Context, qtDays int, referenceDate time.Time) ([]domain.AverageResponse, errors.ApiError) {
-	digitalCoinss := []domain.DigitalCoin{domain.BTC, domain.ETH}
-	dtEnd := referenceDate
-	dtIni := referenceDate.AddDate(0, 0, -qtDays)
-	chanAverageResponse := make(chan domain.AverageResponse, len(digitalCoinss))
-	chanErr := make(chan errors.ApiError, len(digitalCoinss))
+func (s *cryptoCalculatorService) findAverages(ctx context.Context, req dto.AverageRequest) ([]domain.AverageResponse, errors.ApiError) {
+	chanAverageResponse := make(chan domain.AverageResponse, len(req.DigitalCoins))
+	chanErr := make(chan errors.ApiError, len(req.DigitalCoins))
 	wg := sync.WaitGroup{}
-	for _, digtitalCoin := range digitalCoinss {
+	for _, digtitalCoin := range req.DigitalCoins {
 		dc := digtitalCoin //versoes de versoes do go antes de 1.22 precisam disso para evitar race condition
 		wg.Add(1)
 		go func(dcParam domain.DigitalCoin) {
 			defer close(chanAverageResponse)
-			average, err := s.findAverage(ctx, dcParam, qtDays, dtIni, dtEnd)
+			average, err := s.findAverage(ctx, dc, req)
 			if err != nil {
 				chanErr <- err
 				return
@@ -85,19 +89,25 @@ func (s *cryptoCalculatorService) findAverages(ctx context.Context, qtDays int, 
 	return resLastPrices, nil
 }
 
-func (s *cryptoCalculatorService) findAverage(ctx context.Context, digitalCoin domain.DigitalCoin, qtDays int, dtIni, dtEnd time.Time) (*domain.AverageResponse, errors.ApiError) {
-	lastPriceRes, err := s.exchangeAdapter.ListLastPrices(ctx, digitalCoin, dtIni, dtEnd)
+func (s *cryptoCalculatorService) findAverage(ctx context.Context, digitalCoin domain.DigitalCoin, req dto.AverageRequest) (*domain.AverageResponse, errors.ApiError) {
+	lastPriceRes, err := s.exchangeAdapter.ListLastPrices(ctx, digitalCoin, req.StartDate, req.EndDate)
 	if err != nil {
 		return nil, err
 	}
-	res, err := createAverengeResponse(digitalCoin, dtEnd, qtDays, lastPriceRes, strategy.SimpleMovingAverage)
+
+	avgCalculatorF := strategy.GetStrategy(req.AvgType)
+	if avgCalculatorF == nil {
+		return nil, errors.NewApiError(fmt.Sprintf("calculator for type: %s not found", req.AvgType), errors.WithKind(errors.NotFound))
+	}
+
+	res, err := createAverengeResponse(digitalCoin, req, lastPriceRes, avgCalculatorF)
 	if err != nil {
 		return nil, err
 	}
 	return res, nil
 }
 
-func createAverengeResponse(digitalCoin domain.DigitalCoin, referenceDate time.Time, qtDays int, lastClosed []string, calcStrategy strategy.AvgCalculator) (*domain.AverageResponse, errors.ApiError) {
+func createAverengeResponse(digitalCoin domain.DigitalCoin, req dto.AverageRequest, lastClosed []string, calcStrategy strategy.AvgCalculator) (*domain.AverageResponse, errors.ApiError) {
 	values, err := convert(lastClosed)
 	if err != nil {
 		return nil, err
@@ -109,8 +119,9 @@ func createAverengeResponse(digitalCoin domain.DigitalCoin, referenceDate time.T
 	}
 
 	return &domain.AverageResponse{
-		ReferenceDate: referenceDate.Format("2006-01-02"),
-		AvgType:       strconv.Itoa(qtDays),
+		ReferenceDate: req.EndDate.Format("2006-01-02"),
+		AvgType:       string(req.AvgType),
+		Days:          req.Days,
 		DigitalCoin:   digitalCoin,
 		Value:         avg.String(),
 	}, nil
