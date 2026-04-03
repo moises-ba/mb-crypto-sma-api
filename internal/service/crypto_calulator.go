@@ -97,7 +97,7 @@ func (s *cryptoCalculatorService) findAverage(ctx context.Context, digitalCoin d
 
 	avgCalculatorF := strategy.GetStrategy(req.AvgType)
 	if avgCalculatorF == nil {
-		return nil, errors.NewApiError(fmt.Sprintf("calculator for type: %s not found", req.AvgType), errors.WithKind(errors.NotFound))
+		return nil, errors.NewApiError(fmt.Sprintf("calculator for type: %s is invalid", req.AvgType), errors.WithKind(errors.Invalid))
 	}
 
 	res, err := createAverengeResponse(digitalCoin, req, lastPriceRes, avgCalculatorF)
