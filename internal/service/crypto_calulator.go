@@ -106,7 +106,7 @@ func (s *cryptoCalculatorService) findAverage(ctx context.Context, digitalCoin d
 }
 
 func createAverengeResponse(qtDays int, lastClosed *domain.LastPrices) (*domain.AverageResponse, errors.ApiError) {
-
+	//TODO IMPLEMENTAR
 }
 
 func getDatesDescending(lastCloseds map[string]decimal.Decimal) []string {
