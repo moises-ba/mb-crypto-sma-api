@@ -103,7 +103,7 @@ func (s *cryptoCalculatorService) findAverage(ctx context.Context, digitalCoin d
 		return nil, errors.NewApiError(fmt.Sprintf("last price for %s not found", digitalCoin), errors.WithKind(errors.NotFound))
 	}
 
-	if len(lastPriceRes) != req.Days {
+	if len(lastPriceRes) < req.Days {
 		return nil, errors.NewApiError(fmt.Sprintf("it is not posible calculate avg for %s because has no all closed values for %v days", digitalCoin, req.Days),
 			errors.WithKind(errors.Unprocessable))
 	}
