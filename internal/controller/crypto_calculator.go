@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	h "github.com/moises-ba/mb-crypto-mms-api/internal/http"
+	"github.com/moises-ba/mb-crypto-mms-api/internal/log"
 	"github.com/moises-ba/mb-crypto-mms-api/internal/service"
 )
 
@@ -42,6 +43,7 @@ func (ctrl *criptorCalculatorController) ListLastClosedPrices(c *gin.Context) {
 
 	days, err := strconv.ParseInt(c.Param("days"), 10, 32)
 	if err != nil {
+		log.Error("fail to parse days", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			erroField: "invalid days",
 		})
@@ -50,6 +52,7 @@ func (ctrl *criptorCalculatorController) ListLastClosedPrices(c *gin.Context) {
 
 	dtReference, err := time.Parse("2006-01-02", c.Param("dt_reference"))
 	if err != nil {
+		log.Error("fail to parse date", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			erroField: "invalid date",
 		})
@@ -58,6 +61,7 @@ func (ctrl *criptorCalculatorController) ListLastClosedPrices(c *gin.Context) {
 
 	res, apiErr := ctrl.srv.GetLastAVGPrices(c, int(days), dtReference)
 	if apiErr != nil {
+		log.Error("", err)
 		c.JSON(h.EvaluateStatus(apiErr), gin.H{
 			erroField: res,
 		})

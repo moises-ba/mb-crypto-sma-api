@@ -6,6 +6,7 @@ require (
 	github.com/failsafe-go/failsafe-go v0.9.6
 	github.com/gin-gonic/gin v1.12.0
 	github.com/shopspring/decimal v1.4.0
+	github.com/sirupsen/logrus v1.9.4
 )
 
 require (
