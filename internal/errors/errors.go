@@ -47,7 +47,7 @@ func (e *apiError) Error() string {
 }
 
 func NewApiError(message string, optional ...Optional) ApiError {
-	apiErr := &apiError{}
+	apiErr := &apiError{message: message}
 	for _, opt := range optional {
 		opt(apiErr)
 	}
