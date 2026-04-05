@@ -1,62 +1,51 @@
-# 📊 Crypto SMA API
+# MB Crypto SMA API
 
-API responsável por calcular a média móvel simples (SMA) dos últimos preços fechados de criptomoedas.
+API em **Go (Golang)** que calcula a **Média Móvel Simples (SMA)** dos preços fechados de criptomoedas (BTC e ETH) com base em dados do Mercado Bitcoin.
 
----
-
-## 🚀 Endpoint
-
-### 🔹 Listar médias dos últimos preços fechados
-
-Retorna a média dos preços fechados com base na quantidade de dias e uma data de referência.
+A média é calculada para períodos específicos (20, 50 ou 200 dias) a partir de uma data de referência.
 
 ---
 
-## 📥 Parâmetros
+## Funcionalidades
 
-| Parâmetro      | Tipo   | Obrigatório | Descrição                                      |
-|----------------|--------|------------|-----------------------------------------------|
-| `days`         | int    | ✅         | Quantidade de dias (ex: 20, 50, 200)          |
-| `dt_reference` | string | ✅         | Data de referência no formato `YYYY-MM-DD`    |
+- Consulta preços fechados diários de criptomoedas (BTC e ETH).
+- Calcula a **SMA (Simple Moving Average)** para períodos de 20, 50 ou 200 dias.
+- Retorna resultados em **JSON puro**, pronto para consumo em front-end ou integrações.
+- Validação de parâmetros de entrada (`days` e `dt_reference`).
+- Cache em memória para otimização de performance.
+- Estrutura modular com **adapter**, **service**, **strategy** e **controller**.
 
 ---
 
-## 📤 Respostas
+## Estrutura do Projeto
 
-### ✅ 200 OK
 
-Retorna a média dos preços fechados:
+cmd/ # Inicialização da aplicação
+internal/
+├─ adapter/ # Integração com APIs externas (Mercado Bitcoin)
+├─ cache/ # Interface e implementação de cache
+├─ controller/ # Handlers HTTP
+├─ domain/ # Tipos e entidades do domínio
+├─ dto/ # Data Transfer Objects
+├─ errors/ # Erros customizados da API
+├─ http/ # Cliente HTTP customizado
+├─ service/ # Regras de negócio
+├─ strategy/ # Estratégias de cálculo (SMA)
+└─ log/ # Logging
 
-```json
-{
-  "last_closed_prices_avg": [
-    {
-      "digital_coin": "BTC",
-      "value": "43000.25",
-      "days": 20,
-      "avg_type": "SMA",
-      "reference_date": "2024-01-01"
-    },
-        {
-      "digital_coin": "ETH",
-      "value": "23000.25",
-      "days": 20,
-      "avg_type": "SMA",
-      "reference_date": "2024-01-01"
-    }
-  ]
-}
 
-## 🚀 Como Executar o Projeto
+---
 
-Para rodar o projeto localmente, você precisa ter o **Docker** e o **Docker Compose** instalados.  
+## Como Executar
 
-### Passos:
+### Requisitos
 
-1. Clone o repositório:
+- **Docker** e **Docker Compose**
+- Go >= 1.20 (para desenvolvimento local, opcional se usar Docker)
+
+### Executando com Docker Compose
 
 ```bash
-git clone https://github.com/moises-ba/mb-crypto-sma-api -b develop
+git clone https://github.com/moises-ba/mb-crypto-sma-api
 cd mb-crypto-sma-api
 docker compose up
-```

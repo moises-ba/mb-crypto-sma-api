@@ -45,7 +45,6 @@ func TestParse(t *testing.T) {
 			res, err := Parse(tt.dateStr, tt.pattern)
 
 			if tt.expectError {
-				// ⚠️ ApiError não é error padrão → valida diferente
 				assert.NotNil(t, err)
 				assert.Nil(t, res)
 
@@ -54,8 +53,6 @@ func TestParse(t *testing.T) {
 
 			assert.Nil(t, err)
 			assert.NotNil(t, res)
-
-			// valida usando o mesmo parse para evitar timezone issues
 			expected, _ := time.Parse(tt.pattern, tt.dateStr)
 
 			assert.True(t, expected.Equal(*res))
