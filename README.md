@@ -58,3 +58,5 @@ Para rodar o projeto localmente, você precisa ter o **Docker** e o **Docker Com
 ```bash
 git clone https://github.com/moises-ba/mb-crypto-sma-api -b develop
 cd mb-crypto-sma-api
+docker compose up
+```
