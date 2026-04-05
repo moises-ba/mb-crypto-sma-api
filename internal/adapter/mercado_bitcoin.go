@@ -33,7 +33,7 @@ func NewMercadoBitcoin(client http.Client) MercadoBitcoin {
 }
 
 func (m *mercadoBitcoin) ListLastClosedPrices(ctx context.Context, digitalCurrency domain.DigitalCoin, dtIni, dtEnd time.Time) ([]string, errors.ApiError) {
-	url := fmt.Sprintf("%s%s?simbol=BTC&resolution=1d&from=%v&to=%v", mercadobitcoinFQDN, mercadobitcoincandlesURL,
+	url := fmt.Sprintf("%s%s?symbol=BTC&resolution=1d&from=%v&to=%v", mercadobitcoinFQDN, mercadobitcoincandlesURL,
 		dtIni.Unix(), dtEnd.Unix())
 
 	resp, apiErr := m.client.Get(ctx, url)
