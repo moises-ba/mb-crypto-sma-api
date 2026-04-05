@@ -9,6 +9,7 @@ import (
 	h "github.com/moises-ba/mb-crypto-sma-api/internal/http"
 	"github.com/moises-ba/mb-crypto-sma-api/internal/log"
 	"github.com/moises-ba/mb-crypto-sma-api/internal/service"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/timeutil"
 )
 
 const (
@@ -40,7 +41,6 @@ func NewCriptorCalculatorController(srv service.CryptoCalculatorService) Criptor
 // @Failure 500 {object} ApiError
 // @Router /v1/lastclosedprices/{days}/{dt_reference} [get]
 func (ctrl *criptorCalculatorController) ListLastClosedPrices(c *gin.Context) {
-
 	days, err := strconv.ParseInt(c.Param("days"), 10, 32)
 	if err != nil {
 		log.Error("fail to parse days", err)
@@ -50,7 +50,7 @@ func (ctrl *criptorCalculatorController) ListLastClosedPrices(c *gin.Context) {
 		return
 	}
 
-	dtReference, err := time.Parse("2006-01-02", c.Param("dt_reference"))
+	dtReference, err := time.Parse(timeutil.YearMonthDayPattern, c.Param("dt_reference"))
 	if err != nil {
 		log.Error("fail to parse date", err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -59,9 +59,9 @@ func (ctrl *criptorCalculatorController) ListLastClosedPrices(c *gin.Context) {
 		return
 	}
 
-	res, apiErr := ctrl.srv.GetLastAVGPrices(c, int(days), dtReference.UTC())
+	res, apiErr := ctrl.srv.GetLastAVGPrices(c.Request.Context(), int(days), dtReference.UTC())
 	if apiErr != nil {
-		log.Error(apiErr.Error(), err)
+		log.Error(apiErr.Error(), apiErr)
 		c.JSON(h.EvaluateStatus(apiErr), gin.H{
 			erroField: apiErr.Error(),
 		})

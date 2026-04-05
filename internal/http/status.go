@@ -19,5 +19,9 @@ func EvaluateStatus(err errors.ApiError) int {
 		return http.StatusOK
 	}
 
-	return mapKindHttpStatus[err.Kind()]
+	if httpStatus, ok := mapKindHttpStatus[err.Kind()]; ok {
+		return httpStatus
+	}
+
+	return http.StatusInternalServerError
 }
