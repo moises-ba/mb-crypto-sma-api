@@ -46,3 +46,15 @@ Retorna a média dos preços fechados:
     }
   ]
 }
+
+## 🚀 Como Executar o Projeto
+
+Para rodar o projeto localmente, você precisa ter o **Docker** e o **Docker Compose** instalados.  
+
+### Passos:
+
+1. Clone o repositório:
+
+```bash
+git clone https://github.com/moises-ba/mb-crypto-sma-api -b develop
+cd mb-crypto-sma-api

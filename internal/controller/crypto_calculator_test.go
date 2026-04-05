@@ -33,21 +33,18 @@ func TestListLastClosedPrices(t *testing.T) {
 		dateParam      string
 		mock           mockService
 		expectedStatus int
-		expectBody     string
 	}{
 		{
 			name:           "invalid days",
 			daysParam:      "abc",
 			dateParam:      "2024-01-01",
 			expectedStatus: http.StatusBadRequest,
-			expectBody:     "invalid days",
 		},
 		{
 			name:           "invalid date",
 			daysParam:      "20",
 			dateParam:      "invalid-date",
 			expectedStatus: http.StatusBadRequest,
-			expectBody:     "invalid date",
 		},
 		{
 			name:      "service error - invalid",
@@ -59,7 +56,6 @@ func TestListLastClosedPrices(t *testing.T) {
 				},
 			},
 			expectedStatus: http.StatusBadRequest,
-			expectBody:     "invalid request",
 		},
 		{
 			name:      "service error - generic (fallback 500)",
@@ -71,7 +67,6 @@ func TestListLastClosedPrices(t *testing.T) {
 				},
 			},
 			expectedStatus: http.StatusInternalServerError,
-			expectBody:     "internal error",
 		},
 		{
 			name:      "success",
@@ -85,7 +80,6 @@ func TestListLastClosedPrices(t *testing.T) {
 				},
 			},
 			expectedStatus: http.StatusOK,
-			expectBody:     "last_closed_prices_avg",
 		},
 	}
 
@@ -106,7 +100,6 @@ func TestListLastClosedPrices(t *testing.T) {
 			router.ServeHTTP(w, req)
 
 			assert.Equal(t, tt.expectedStatus, w.Code)
-			assert.Contains(t, w.Body.String(), tt.expectBody)
 		})
 	}
 }

@@ -68,7 +68,5 @@ func (ctrl *criptorCalculatorController) ListLastClosedPrices(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"last_closed_prices_avg": res,
-	})
+	c.JSON(http.StatusOK, res)
 }
