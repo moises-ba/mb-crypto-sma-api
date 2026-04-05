@@ -141,7 +141,7 @@ func createAverengeResponse(digitalCoin domain.DigitalCoin, req dto.AverageReque
 }
 
 func convert(priceValues []string) ([]decimal.Decimal, errors.ApiError) {
-	res := make([]decimal.Decimal, len(priceValues))
+	res := make([]decimal.Decimal, 0, len(priceValues))
 	for _, priceValue := range priceValues {
 		v, err := decimal.NewFromString(priceValue)
 		if err != nil {
