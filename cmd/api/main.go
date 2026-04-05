@@ -2,19 +2,25 @@ package main
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/moises-ba/mb-crypto-mms-api/internal/adapter"
+	"github.com/moises-ba/mb-crypto-mms-api/internal/cache"
 	"github.com/moises-ba/mb-crypto-mms-api/internal/controller"
 	h "github.com/moises-ba/mb-crypto-mms-api/internal/http"
 	"github.com/moises-ba/mb-crypto-mms-api/internal/service"
+	"github.com/redis/go-redis/v9"
 )
 
 func main() {
 
 	client := h.NewClient()
 	exchangeAdapter := adapter.NewMercadoBitcoin(client)
-	lastClosedPricesSrv := service.NewCryptoCalculatorService(exchangeAdapter)
+
+	cache := cache.NewRedisCache(createRedisClient())
+
+	lastClosedPricesSrv := service.NewCryptorCalculatorCachable(service.NewCryptoCalculatorService(exchangeAdapter), cache)
 	lastClosedPricesCtrl := controller.NewCriptorCalculatorController(lastClosedPricesSrv)
 
 	r := gin.Default()
@@ -30,4 +36,16 @@ func main() {
 	}
 
 	r.Run(":8080")
+}
+
+func createRedisClient() *redis.Client {
+	// Pega o endereço das variáveis de ambiente (definidas no docker-compose)
+	redisAddr := os.Getenv("REDIS_ADDR")
+	if redisAddr == "" {
+		redisAddr = "localhost:6379"
+	}
+
+	return redis.NewClient(&redis.Options{
+		Addr: redisAddr,
+	})
 }
