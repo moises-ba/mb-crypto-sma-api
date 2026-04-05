@@ -14,7 +14,7 @@ var mapKindHttpStatus = map[errors.Kind]int{
 }
 
 func EvaluateStatus(err errors.ApiError) int {
-	if err != nil {
+	if err == nil {
 		return http.StatusOK
 	}
 

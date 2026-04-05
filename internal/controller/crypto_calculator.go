@@ -61,9 +61,9 @@ func (ctrl *criptorCalculatorController) ListLastClosedPrices(c *gin.Context) {
 
 	res, apiErr := ctrl.srv.GetLastAVGPrices(c, int(days), dtReference)
 	if apiErr != nil {
-		log.Error("", err)
+		log.Error(apiErr.Error(), err)
 		c.JSON(h.EvaluateStatus(apiErr), gin.H{
-			erroField: res,
+			erroField: apiErr.Error(),
 		})
 		return
 	}

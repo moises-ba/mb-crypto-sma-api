@@ -57,7 +57,7 @@ func (c *client) Get(ctx context.Context, url string) (*Response, errors.ApiErro
 		func(exec failsafe.Execution[*http.Response]) (*http.Response, error) {
 			req, err := http.NewRequestWithContext(exec.Context(), http.MethodGet, url, nil)
 			if err != nil {
-				return nil, err
+				return nil, errors.NewApiError("error exec calling get", errors.WithError(err), errors.WithKind(errors.Unexpected))
 			}
 
 			return c.httpClient.Do(req)
