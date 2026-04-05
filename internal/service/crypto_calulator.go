@@ -99,18 +99,19 @@ func (s *cryptoCalculatorService) findAverages(ctx context.Context, req dto.Aver
 
 func (s *cryptoCalculatorService) findAverage(ctx context.Context, digitalCoin domain.DigitalCoin, req dto.AverageRequest) (*domain.AverageResponse, errors.ApiError) {
 	var lastPriceRes []string
-	var err errors.ApiError
 
 	//single flight serve para evitar o thundering herd problem,  requisições duplicadas concorrentes, onde multiplas goroutines tentam acessar o mesmo dado a mesmo tempo.
 	//com isso vamos na api apenas uma vez e todas as goroutines recebem o resultado para a mesma chave
-	s.singleFlightGroup.Do(fmt.Sprintf("%s_%s_%v", req.EndDate.Format(timeutil.YearMonthDayPattern), digitalCoin, req.Days),
+	//observacao: ele nao guarda cache, so evita que varias goroutines faça a mesma requisicao ao mesmo tempo em q ainda outra esta sendo executada
+	res, err, _ := s.singleFlightGroup.Do(fmt.Sprintf("%s_%s_%v", req.EndDate.Format(timeutil.YearMonthDayPattern), digitalCoin, req.Days),
 		func() (any, error) {
-			lastPriceRes, err = s.exchangeAdapter.ListLastClosedPrices(ctx, digitalCoin, req.StartDate, req.EndDate)
-			return lastPriceRes, err
+			return s.exchangeAdapter.ListLastClosedPrices(ctx, digitalCoin, req.StartDate, req.EndDate)
 		})
 	if err != nil {
-		return nil, err
+		return nil, err.(errors.ApiError)
 	}
+
+	lastPriceRes = res.([]string)
 
 	if len(lastPriceRes) == 0 {
 		return nil, errors.NewApiError(fmt.Sprintf("last price for %s not found", digitalCoin), errors.WithKind(errors.NotFound))
@@ -126,11 +127,7 @@ func (s *cryptoCalculatorService) findAverage(ctx context.Context, digitalCoin d
 		return nil, errors.NewApiError(fmt.Sprintf("calculator for type: %s is invalid", req.AvgType), errors.WithKind(errors.Invalid))
 	}
 
-	res, err := createAverengeResponse(digitalCoin, req, lastPriceRes, avgCalculatorF)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
+	return createAverengeResponse(digitalCoin, req, lastPriceRes, avgCalculatorF)
 }
 
 func createAverengeResponse(digitalCoin domain.DigitalCoin, req dto.AverageRequest, lastClosed []string, calcStrategy strategy.AvgCalculator) (*domain.AverageResponse, errors.ApiError) {
