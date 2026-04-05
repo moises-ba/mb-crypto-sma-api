@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+
 	client := h.NewClient()
 	exchangeAdapter := adapter.NewMercadoBitcoin(client)
 	lastClosedPricesSrv := service.NewCryptoCalculatorService(exchangeAdapter)

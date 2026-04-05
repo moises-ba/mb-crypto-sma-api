@@ -51,7 +51,7 @@ func (s *cryptoCalculatorService) findAverages(ctx context.Context, req dto.Aver
 		dc := digtitalCoin //versoes de versoes do go antes de 1.22 precisam disso para evitar race condition
 		wg.Add(1)
 		go func(dcParam domain.DigitalCoin) {
-			defer close(chanAverageResponse)
+			wg.Done()
 			average, err := s.findAverage(ctx, dc, req)
 			if err != nil {
 				chanErr <- err
