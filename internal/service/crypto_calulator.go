@@ -100,7 +100,7 @@ func (s *cryptoCalculatorService) findAverage(ctx context.Context, digitalCoin d
 	}
 
 	if len(lastPriceRes) == 0 {
-		return nil, errors.NewApiError(fmt.Sprintf("las price for %s not found", digitalCoin), errors.WithKind(errors.NotFound))
+		return nil, errors.NewApiError(fmt.Sprintf("last price for %s not found", digitalCoin), errors.WithKind(errors.NotFound))
 	}
 
 	avgCalculatorF := strategy.GetStrategy(req.AvgType)
