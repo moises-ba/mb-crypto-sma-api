@@ -26,6 +26,7 @@ func WithError(err error) Optional {
 type ApiError interface {
 	Error() string
 	Unwrap() error
+	Kind() Kind
 }
 
 type apiError struct {
