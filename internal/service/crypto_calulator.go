@@ -25,6 +25,10 @@ type cryptoCalculatorService struct {
 	exchangeAdapter adapter.Exchange
 }
 
+func NewCryptoCalculatorService(exchangeAdapter adapter.Exchange) CryptoCalculatorService {
+	return &cryptoCalculatorService{exchangeAdapter: exchangeAdapter}
+}
+
 func (s *cryptoCalculatorService) GetLastAVGPrices(ctx context.Context, qtDays int, referenceDate time.Time) ([]domain.AverageResponse, errors.ApiError) {
 	if !slices.Contains(allowedQtDays, qtDays) {
 		return nil, errors.NewApiError(fmt.Sprintf("invalid qt_days: %v", qtDays), errors.WithKind(errors.Internal))
@@ -93,6 +97,10 @@ func (s *cryptoCalculatorService) findAverage(ctx context.Context, digitalCoin d
 	lastPriceRes, err := s.exchangeAdapter.ListLastPrices(ctx, digitalCoin, req.StartDate, req.EndDate)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(lastPriceRes) == 0 {
+		return nil, errors.NewApiError(fmt.Sprintf("las price for %s not found", digitalCoin), errors.WithKind(errors.NotFound))
 	}
 
 	avgCalculatorF := strategy.GetStrategy(req.AvgType)
