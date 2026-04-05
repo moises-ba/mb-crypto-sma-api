@@ -20,7 +20,7 @@ type mercadoBitCoinResponse struct {
 }
 
 type MercadoBitcoin interface {
-	ListLastClosedPrices(ctx context.Context, digitalCurrency domain.DigitalCoin, referenceDate time.Time) ([]string, errors.ApiError)
+	ListLastClosedPrices(ctx context.Context, digitalCurrency domain.DigitalCoin, dtIni, dtEnd time.Time) ([]string, errors.ApiError)
 }
 
 type mercadoBitcoin struct {
@@ -31,7 +31,7 @@ func NewMercadoBitcoin(client http.Client) MercadoBitcoin {
 	return &mercadoBitcoin{client: client}
 }
 
-func (m *mercadoBitcoin) ListLastClosedPrices(ctx context.Context, digitalCurrency domain.DigitalCoin, referenceDate time.Time) ([]string, errors.ApiError) {
+func (m *mercadoBitcoin) ListLastClosedPrices(ctx context.Context, digitalCurrency domain.DigitalCoin, dtIni, dtEnd time.Time) ([]string, errors.ApiError) {
 	resp, apiErr := m.client.Get(ctx, maercadobitcoinFQDN+maercadobitcoincandlesURL)
 	if apiErr != nil {
 		return nil, apiErr

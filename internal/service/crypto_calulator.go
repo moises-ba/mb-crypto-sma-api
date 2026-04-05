@@ -94,7 +94,7 @@ func (s *cryptoCalculatorService) findAverages(ctx context.Context, req dto.Aver
 }
 
 func (s *cryptoCalculatorService) findAverage(ctx context.Context, digitalCoin domain.DigitalCoin, req dto.AverageRequest) (*domain.AverageResponse, errors.ApiError) {
-	lastPriceRes, err := s.exchangeAdapter.ListLastPrices(ctx, digitalCoin, req.StartDate, req.EndDate)
+	lastPriceRes, err := s.exchangeAdapter.ListLastClosedPrices(ctx, digitalCoin, req.StartDate, req.EndDate)
 	if err != nil {
 		return nil, err
 	}

@@ -9,5 +9,5 @@ import (
 )
 
 type Exchange interface {
-	ListLastPrices(ctx context.Context, digitalCurrency domain.DigitalCoin, dateIni, dateTo time.Time) ([]string, errors.ApiError)
+	ListLastClosedPrices(ctx context.Context, digitalCurrency domain.DigitalCoin, dateIni, dateTo time.Time) ([]string, errors.ApiError)
 }
