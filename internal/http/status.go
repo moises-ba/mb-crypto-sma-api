@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	"github.com/moises-ba/mb-crypto-mms-api/internal/errors"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/errors"
 )
 
 var mapKindHttpStatus = map[errors.Kind]int{

@@ -3,7 +3,7 @@ package timeutil
 import (
 	"time"
 
-	"github.com/moises-ba/mb-crypto-mms-api/internal/errors"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/errors"
 )
 
 const YearMonthDayPattern = "2006-01-02"

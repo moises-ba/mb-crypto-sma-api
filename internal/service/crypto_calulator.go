@@ -7,11 +7,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/moises-ba/mb-crypto-mms-api/internal/adapter"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/domain"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/dto"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/errors"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/strategy"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/adapter"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/domain"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/dto"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/errors"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/strategy"
 	"github.com/shopspring/decimal"
 )
 

@@ -9,8 +9,8 @@ import (
 	"github.com/failsafe-go/failsafe-go"
 	"github.com/failsafe-go/failsafe-go/circuitbreaker"
 	"github.com/failsafe-go/failsafe-go/retrypolicy"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/errors"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/log"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/errors"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/log"
 )
 
 type Response struct {
@@ -42,7 +42,7 @@ func NewClient() *client {
 
 	retry := retrypolicy.NewBuilder[*http.Response]().
 		HandleIf(handlelf).
-		WithBackoff(500*time.Millisecond, 2*time.Second).
+		WithBackoff(500*time.Millisecond, 1*time.Second).
 		WithMaxRetries(2).
 		Build()
 
@@ -54,6 +54,7 @@ func NewClient() *client {
 }
 
 func (c *client) Get(ctx context.Context, url string) (*Response, errors.ApiError) {
+	log.Info("get: " + url)
 	resp, err := c.executor.WithContext(ctx).GetWithExecution(
 		func(exec failsafe.Execution[*http.Response]) (*http.Response, error) {
 			req, err := http.NewRequestWithContext(exec.Context(), http.MethodGet, url, nil)

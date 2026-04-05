@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/moises-ba/mb-crypto-mms-api/internal/domain"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/errors"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/http"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/domain"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/errors"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/http"
 )
 
 const (
@@ -36,8 +36,6 @@ func (m *mercadoBitcoin) ListLastClosedPrices(ctx context.Context, digitalCurren
 	url := fmt.Sprintf("%s%s?symbol=%s-BRL&resolution=1d&from=%v&to=%v", mercadobitcoinFQDN, mercadobitcoincandlesURL,
 		digitalCurrency,
 		dtIni.Unix(), dtEnd.Unix())
-
-	fmt.Println(url)
 
 	resp, apiErr := m.client.Get(ctx, url)
 	if apiErr != nil {

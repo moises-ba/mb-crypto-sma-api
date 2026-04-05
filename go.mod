@@ -1,4 +1,4 @@
-module github.com/moises-ba/mb-crypto-mms-api
+module github.com/moises-ba/mb-crypto-sma-api
 
 go 1.26.1
 

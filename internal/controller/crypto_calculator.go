@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	h "github.com/moises-ba/mb-crypto-mms-api/internal/http"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/log"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/service"
+	h "github.com/moises-ba/mb-crypto-sma-api/internal/http"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/log"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/service"
 )
 
 const (

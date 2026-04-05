@@ -5,11 +5,11 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/adapter"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/cache"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/controller"
-	h "github.com/moises-ba/mb-crypto-mms-api/internal/http"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/service"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/adapter"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/cache"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/controller"
+	h "github.com/moises-ba/mb-crypto-sma-api/internal/http"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/service"
 	"github.com/redis/go-redis/v9"
 )
 

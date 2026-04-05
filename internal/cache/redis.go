@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/moises-ba/mb-crypto-mms-api/internal/errors"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/errors"
 	"github.com/redis/go-redis/v9"
 )
 

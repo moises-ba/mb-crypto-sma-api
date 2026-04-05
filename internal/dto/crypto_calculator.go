@@ -3,7 +3,7 @@ package dto
 import (
 	"time"
 
-	"github.com/moises-ba/mb-crypto-mms-api/internal/domain"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/domain"
 )
 
 type AverageRequest struct {

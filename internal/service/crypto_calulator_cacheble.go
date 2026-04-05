@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/moises-ba/mb-crypto-mms-api/internal/cache"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/domain"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/errors"
-	"github.com/moises-ba/mb-crypto-mms-api/internal/log"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/cache"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/domain"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/errors"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/log"
 )
 
 // Decorator que faz cache dos resultados
