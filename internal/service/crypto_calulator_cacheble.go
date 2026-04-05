@@ -9,6 +9,7 @@ import (
 	"github.com/moises-ba/mb-crypto-sma-api/internal/domain"
 	"github.com/moises-ba/mb-crypto-sma-api/internal/errors"
 	"github.com/moises-ba/mb-crypto-sma-api/internal/log"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/timeutil"
 )
 
 // Decorator que faz cache dos resultados
@@ -25,7 +26,7 @@ func NewCryptorCalculatorCachable(srv CryptoCalculatorService, c cache.Cache) Cr
 }
 
 func (s *cryptorCalculatorCachable) GetLastAVGPrices(ctx context.Context, qtDays int, referenceDate time.Time) ([]domain.AverageResponse, errors.ApiError) {
-	key := fmt.Sprintf("%s_%v", referenceDate.Format("01-01-2026"), qtDays)
+	key := fmt.Sprintf("%s_%v", referenceDate.Format(timeutil.YearMonthDayPattern), qtDays)
 
 	var response []domain.AverageResponse
 	ok, err := s.c.Get(ctx, key, &response)
