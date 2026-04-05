@@ -12,7 +12,10 @@ import (
 	"github.com/moises-ba/mb-crypto-sma-api/internal/dto"
 	"github.com/moises-ba/mb-crypto-sma-api/internal/errors"
 	"github.com/moises-ba/mb-crypto-sma-api/internal/strategy"
+	"github.com/moises-ba/mb-crypto-sma-api/internal/timeutil"
 	"github.com/shopspring/decimal"
+
+	"golang.org/x/sync/singleflight"
 )
 
 var allowedQtDays = []int{20, 50, 200}
@@ -22,7 +25,8 @@ type CryptoCalculatorService interface {
 }
 
 type cryptoCalculatorService struct {
-	exchangeAdapter adapter.Exchange
+	singleFlightGroup singleflight.Group
+	exchangeAdapter   adapter.Exchange
 }
 
 func NewCryptoCalculatorService(exchangeAdapter adapter.Exchange) CryptoCalculatorService {
@@ -94,7 +98,16 @@ func (s *cryptoCalculatorService) findAverages(ctx context.Context, req dto.Aver
 }
 
 func (s *cryptoCalculatorService) findAverage(ctx context.Context, digitalCoin domain.DigitalCoin, req dto.AverageRequest) (*domain.AverageResponse, errors.ApiError) {
-	lastPriceRes, err := s.exchangeAdapter.ListLastClosedPrices(ctx, digitalCoin, req.StartDate, req.EndDate)
+	var lastPriceRes []string
+	var err errors.ApiError
+
+	//single flight serve para evitar o thundering herd problem,  requisições duplicadas concorrentes, onde multiplas goroutines tentam acessar o mesmo dado a mesmo tempo.
+	//com isso vamos na api apenas uma vez e todas as goroutines recebem o resultado para a mesma chave
+	s.singleFlightGroup.Do(fmt.Sprintf("%s_%s_%v", req.EndDate.Format(timeutil.YearMonthDayPattern), digitalCoin, req.Days),
+		func() (any, error) {
+			lastPriceRes, err = s.exchangeAdapter.ListLastClosedPrices(ctx, digitalCoin, req.StartDate, req.EndDate)
+			return lastPriceRes, err
+		})
 	if err != nil {
 		return nil, err
 	}

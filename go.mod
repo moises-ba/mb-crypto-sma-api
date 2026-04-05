@@ -9,6 +9,7 @@ require (
 	github.com/shopspring/decimal v1.4.0
 	github.com/sirupsen/logrus v1.9.4
 	github.com/stretchr/testify v1.11.1
+	golang.org/x/sync v0.20.0
 )
 
 require (
