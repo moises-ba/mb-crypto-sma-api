@@ -6,12 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/moises-ba/mb-crypto-mms-api/internal/adapter"
 	"github.com/moises-ba/mb-crypto-mms-api/internal/controller"
+	h "github.com/moises-ba/mb-crypto-mms-api/internal/http"
 	"github.com/moises-ba/mb-crypto-mms-api/internal/service"
 )
 
 func main() {
-
-	exchangeAdapter := adapter.NewMercadoBitcoin()
+	client := h.NewClient()
+	exchangeAdapter := adapter.NewMercadoBitcoin(client)
 	lastClosedPricesSrv := service.NewCryptoCalculatorService(exchangeAdapter)
 	lastClosedPricesCtrl := controller.NewCriptorCalculatorController(lastClosedPricesSrv)
 
