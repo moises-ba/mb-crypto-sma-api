@@ -10,6 +10,7 @@ import (
 	"github.com/failsafe-go/failsafe-go/circuitbreaker"
 	"github.com/failsafe-go/failsafe-go/retrypolicy"
 	"github.com/moises-ba/mb-crypto-mms-api/internal/errors"
+	"github.com/moises-ba/mb-crypto-mms-api/internal/log"
 )
 
 type Response struct {
@@ -57,6 +58,7 @@ func (c *client) Get(ctx context.Context, url string) (*Response, errors.ApiErro
 		func(exec failsafe.Execution[*http.Response]) (*http.Response, error) {
 			req, err := http.NewRequestWithContext(exec.Context(), http.MethodGet, url, nil)
 			if err != nil {
+				log.Error("request error: "+req.URL.String(), err)
 				return nil, errors.NewApiError("error exec calling get", errors.WithError(err), errors.WithKind(errors.Unexpected))
 			}
 
@@ -65,6 +67,7 @@ func (c *client) Get(ctx context.Context, url string) (*Response, errors.ApiErro
 	)
 
 	if err != nil {
+		log.Error("request error", err)
 		return nil, errors.NewApiError("error calling get", errors.WithError(err), errors.WithKind(errors.Unexpected))
 	}
 	defer resp.Body.Close()
