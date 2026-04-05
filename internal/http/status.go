@@ -7,10 +7,11 @@ import (
 )
 
 var mapKindHttpStatus = map[errors.Kind]int{
-	errors.NotFound:   http.StatusNotFound,
-	errors.Invalid:    http.StatusBadRequest,
-	errors.Internal:   http.StatusInternalServerError,
-	errors.Unexpected: http.StatusInternalServerError,
+	errors.NotFound:      http.StatusNotFound,
+	errors.Invalid:       http.StatusBadRequest,
+	errors.Internal:      http.StatusInternalServerError,
+	errors.Unexpected:    http.StatusInternalServerError,
+	errors.Unprocessable: http.StatusUnprocessableEntity,
 }
 
 func EvaluateStatus(err errors.ApiError) int {

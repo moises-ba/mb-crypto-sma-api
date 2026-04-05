@@ -37,6 +37,8 @@ func (m *mercadoBitcoin) ListLastClosedPrices(ctx context.Context, digitalCurren
 		digitalCurrency,
 		dtIni.Unix(), dtEnd.Unix())
 
+	fmt.Println(url)
+
 	resp, apiErr := m.client.Get(ctx, url)
 	if apiErr != nil {
 		return nil, apiErr

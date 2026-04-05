@@ -3,10 +3,11 @@ package errors
 type Kind string
 
 const (
-	NotFound   Kind = "not_found"
-	Invalid    Kind = "invalid"
-	Internal   Kind = "internal"
-	Unexpected Kind = "unexpected"
+	NotFound      Kind = "not_found"
+	Invalid       Kind = "invalid"
+	Internal      Kind = "internal"
+	Unexpected    Kind = "unexpected"
+	Unprocessable Kind = "unprocessable"
 )
 
 type Optional func(e *apiError)

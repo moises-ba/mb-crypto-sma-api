@@ -103,6 +103,11 @@ func (s *cryptoCalculatorService) findAverage(ctx context.Context, digitalCoin d
 		return nil, errors.NewApiError(fmt.Sprintf("last price for %s not found", digitalCoin), errors.WithKind(errors.NotFound))
 	}
 
+	if len(lastPriceRes) != req.Days {
+		return nil, errors.NewApiError(fmt.Sprintf("it is not posible calculate avg for %s because has no all closed values for %v days", digitalCoin, req.Days),
+			errors.WithKind(errors.Unprocessable))
+	}
+
 	avgCalculatorF := strategy.GetStrategy(req.AvgType)
 	if avgCalculatorF == nil {
 		return nil, errors.NewApiError(fmt.Sprintf("calculator for type: %s is invalid", req.AvgType), errors.WithKind(errors.Invalid))
