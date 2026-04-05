@@ -38,7 +38,7 @@ func (s *cryptoCalculatorService) GetLastAVGPrices(ctx context.Context, qtDays i
 		DigitalCoins: []domain.DigitalCoin{domain.BTC, domain.ETH},
 		AvgType:      domain.SMA,
 		Days:         qtDays,
-		StartDate:    referenceDate.AddDate(0, 0, -qtDays),
+		StartDate:    referenceDate.AddDate(0, 0, -(qtDays - 1)),
 		EndDate:      referenceDate,
 	})
 }
