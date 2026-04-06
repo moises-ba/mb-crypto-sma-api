@@ -34,8 +34,8 @@ func NewCryptoCalculatorService(exchangeAdapter adapter.Exchange) CryptoCalculat
 }
 
 func (s *cryptoCalculatorService) GetLastAVGPrices(ctx context.Context, qtDays int, referenceDate time.Time) ([]domain.AverageResponse, errors.ApiError) {
-	if !slices.Contains(allowedQtDays, qtDays) {
-		return nil, errors.NewApiError(fmt.Sprintf("invalid qt_days: %v", qtDays), errors.WithKind(errors.Invalid))
+	if err := validate(qtDays, referenceDate); err != nil {
+		return nil, err
 	}
 
 	return s.findAverages(ctx, dto.AverageRequest{
@@ -45,6 +45,18 @@ func (s *cryptoCalculatorService) GetLastAVGPrices(ctx context.Context, qtDays i
 		StartDate:    referenceDate.AddDate(0, 0, -(qtDays - 1)),
 		EndDate:      referenceDate,
 	})
+}
+
+func validate(qtDays int, referenceDate time.Time) errors.ApiError {
+	if !slices.Contains(allowedQtDays, qtDays) {
+		return errors.NewApiError(fmt.Sprintf("invalid qt_days: %v", qtDays), errors.WithKind(errors.Invalid))
+	}
+
+	if referenceDate.After(time.Now().UTC()) {
+		return errors.NewApiError("date is greather today", errors.WithKind(errors.Invalid))
+	}
+
+	return nil
 }
 
 func (s *cryptoCalculatorService) findAverages(ctx context.Context, req dto.AverageRequest) ([]domain.AverageResponse, errors.ApiError) {
