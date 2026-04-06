@@ -19,20 +19,19 @@ A média é calculada para períodos específicos (20, 50 ou 200 dias) a partir 
 
 ## Estrutura do Projeto
 
-
-cmd/ # Inicialização da aplicação
+```text
+cmd/                # Inicialização da aplicação
 internal/
-├─ adapter/ # Integração com APIs externas (Mercado Bitcoin)
-├─ cache/ # Interface e implementação de cache
-├─ controller/ # Handlers HTTP
-├─ domain/ # Tipos e entidades do domínio
-├─ dto/ # Data Transfer Objects
-├─ errors/ # Erros customizados da API
-├─ http/ # Cliente HTTP customizado
-├─ service/ # Regras de negócio
-├─ strategy/ # Estratégias de cálculo (SMA)
-└─ log/ # Logging
-
+├─ adapter/        # Integração com APIs externas (Mercado Bitcoin)
+├─ cache/          # Interface e implementação de cache
+├─ controller/     # Handlers HTTP
+├─ domain/         # Tipos e entidades do domínio
+├─ dto/            # Data Transfer Objects
+├─ errors/         # Erros customizados da API
+├─ http/           # Cliente HTTP customizado
+├─ service/        # Regras de negócio
+├─ strategy/       # Estratégias de cálculo (SMA)
+└─ log/            # Logging
 
 ---
 
