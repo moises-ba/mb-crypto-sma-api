@@ -32,6 +32,7 @@ internal/
 ├─ service/        # Regras de negócio
 ├─ strategy/       # Estratégias de cálculo (SMA)
 └─ log/            # Logging
+```
 
 ---
 
