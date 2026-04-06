@@ -49,3 +49,11 @@ internal/
 git clone https://github.com/moises-ba/mb-crypto-sma-api
 cd mb-crypto-sma-api
 docker compose up
+```
+
+
+### chamando a aplicação
+ex:
+```
+curl 'http://localhost:8080/v1/sma/200/2026-01-06'
+```

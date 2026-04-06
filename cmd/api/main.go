@@ -32,7 +32,7 @@ func main() {
 			})
 		})
 
-		v1.GET("/lastclosedprices/:days/:dt_reference", lastClosedPricesCtrl.ListLastClosedPrices) //escolhido path para porque os parametros sao obrigatorios data no formato YYYY-MM-DD
+		v1.GET("/sma/:days/:dt_reference", lastClosedPricesCtrl.ListLastClosedPrices) //escolhido path para porque os parametros sao obrigatorios data no formato YYYY-MM-DD
 	}
 
 	r.Run(":8080")
