@@ -49,7 +49,7 @@ func (s *cryptoCalculatorService) GetLastAVGPrices(ctx context.Context, qtDays i
 
 func validate(qtDays int, referenceDate time.Time) errors.ApiError {
 	if !slices.Contains(allowedQtDays, qtDays) {
-		return errors.NewApiError(fmt.Sprintf("invalid qt_days: %v", qtDays), errors.WithKind(errors.Invalid))
+		return errors.NewApiError(fmt.Sprintf("days must be one of %v", allowedQtDays), errors.WithKind(errors.Invalid))
 	}
 
 	if referenceDate.After(time.Now().UTC()) {
