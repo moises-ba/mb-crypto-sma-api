@@ -46,7 +46,7 @@ internal/
 ### Executando com Docker Compose
 
 ```bash
-git clone https://github.com/moises-ba/mb-crypto-sma-api
+git clone https://github.com/moises-ba/mb-crypto-sma-api -b develop
 cd mb-crypto-sma-api
 docker compose up
 ```
